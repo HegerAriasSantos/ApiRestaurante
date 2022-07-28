@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiRestaurante.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IDTTContext))]
-    [Migration("20220728030941_Initial")]
+    [Migration("20220728181654_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

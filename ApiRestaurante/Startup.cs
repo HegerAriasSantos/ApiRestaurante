@@ -1,3 +1,4 @@
+using ApiRestaurante.Core.Application;
 using ApiRestaurante.Infrastructure.Persistence;
 using InternetBanking.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,7 @@ namespace ApiRestaurante
             
             services.AddIdentityInfrastructure(Configuration);
             services.AddPersistenceInfrastructure(Configuration);
+            services.AddApplicationLayer(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ApiRestaurante.Core.Application.Interfaces.Services;
+using ApiRestaurante.Core.Application.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,13 @@ namespace ApiRestaurante.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             //Dependency Injection
+
+            services.AddTransient(typeof(IGenericService<,,>), typeof(GenericService<,,>));
+            services.AddTransient<IDishService, DishService>();
+            services.AddTransient<IIngredientService, IngredientService>();
+            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<ITableService, TableService>();
+            services.AddTransient<IUserService, UserService>();
         }
     }
 }

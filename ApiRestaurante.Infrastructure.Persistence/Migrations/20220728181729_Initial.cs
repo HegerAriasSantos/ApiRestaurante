@@ -101,7 +101,6 @@ namespace ApiRestaurante.Infrastructure.Persistence.Migrations
                     IdTable = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Category = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
