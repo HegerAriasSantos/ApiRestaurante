@@ -1,5 +1,6 @@
 using ApiRestaurante.Core.Application;
 using ApiRestaurante.Infrastructure.Persistence;
+using ApiRestaurante.Presentation.WebApi.Extensions;
 using InternetBanking.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,12 +34,11 @@ namespace ApiRestaurante
             services.AddIdentityInfrastructure(Configuration);
             services.AddPersistenceInfrastructure(Configuration);
             services.AddApplicationLayer(Configuration);
+            services.AddSwaggerExtension();
+            services.AddApiVersioningExtension();
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiRestaurante", Version = "v1" });
-            });
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,8 +47,11 @@ namespace ApiRestaurante
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiRestaurante v1"));
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHttpMethodOverride();
             }
 
             //app.UseSession();
@@ -58,6 +61,9 @@ namespace ApiRestaurante
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHealthChecks("/health");
+
+            app.UseSwaggerExtension();
 
             app.UseEndpoints(endpoints =>
             {
