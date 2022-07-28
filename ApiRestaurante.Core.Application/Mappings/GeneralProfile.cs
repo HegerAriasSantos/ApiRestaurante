@@ -26,6 +26,11 @@ namespace ApiRestaurante.Core.Application.Mappings
                 .ForMember(d => d.Error, o => o.Ignore())
                 .ReverseMap();
 
+            CreateMap<LoginRequest, LoginViewModel>()
+                .ForMember(d => d.HasError, o => o.Ignore())
+                .ForMember(d => d.Error, o => o.Ignore())
+                .ReverseMap();
+
             CreateMap<Dish, SaveDishViewModel>()
                 .ForMember(d => d.HasError, o => o.Ignore())
                 .ForMember(d => d.Error, o => o.Ignore())

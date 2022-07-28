@@ -8,6 +8,7 @@ namespace ApiRestaurante.Core.Application.Enums
 {
     public enum Roles
     {
+        SuperAdmin,
         Admin,
         Waiter
     }
