@@ -29,7 +29,9 @@ namespace ApiRestaurante
                     var roleM = s.GetRequiredService<RoleManager<IdentityRole>>();
 
                     await DefaultRoles.SeedAsync(userM, roleM);
+                    await DefaultSuperAdmin.SeedAsync(userM, roleM);
                     await DefaultAdminUser.SeedAsync(userM, roleM);
+                    await DefaultWaiterUser.SeedAsync(userM, roleM);
                 }catch(Exception ex)
                 {
                     Console.WriteLine($"Error executing seeds: {ex.Message}");

@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace InternetBanking.Infrastructure.Identity.Seeds
 {
-    public static class DefaultAdminUser
+    public static class DefaultWaiterUser
     {
         public static async Task SeedAsync(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             AppUser defaultUser = new();
-            defaultUser.FirstName = "Admin";
-            defaultUser.LastName = "User";
-            defaultUser.UserName = "AdminUser";
-            defaultUser.Email = "adminuser@email.com";
+            defaultUser.FirstName = "John";
+            defaultUser.LastName = "Doe";
+            defaultUser.UserName = "WaiterUser";
+            defaultUser.Email = "defwaiter@email.com";
             defaultUser.EmailConfirmed = true;
             defaultUser.PhoneNumberConfirmed = true;
 
@@ -24,8 +24,8 @@ namespace InternetBanking.Infrastructure.Identity.Seeds
 
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "123Pa$$word!");
-                    await userManager.AddToRoleAsync(defaultUser, Roles.Admin.ToString());
+                    await userManager.CreateAsync(defaultUser, "Password123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.Waiter.ToString());
                 }
             }
         }
