@@ -11,7 +11,7 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
         where VM : class
         where SaveVM:class
     {
-        Task<VM> Add(SaveVM saveVM);
+        Task<SaveVM> Add(SaveVM saveVM);
         Task Update(SaveVM saveVM, int id);
         Task Delete(int id);
         Task<List<VM>> GetAllViewModel();

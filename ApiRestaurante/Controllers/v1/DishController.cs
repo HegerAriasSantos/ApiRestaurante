@@ -139,6 +139,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     await _dishService.DeleteIngredientFromDish(del, id);
                 }
 
+                vm.Id = id;
                 await _dishService.Update(vm, id);
 
                 foreach (var add in forAdd)

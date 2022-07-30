@@ -66,10 +66,6 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                 vm.TotalPrice = subTotal;
                 vm.Status = (int)OrderStatus.InProcess;
                 var order = await _orderService.Add(vm);
-                if (order == null)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, order);
-                }
 
                 foreach (var id in vm.DishIds)
                 {
@@ -80,7 +76,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
 
@@ -159,6 +155,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                 vm.TotalPrice += amountToAdd;
                 vm.TotalPrice -= amountToSubstract;
 
+                vm.Id = id;
                 await _orderService.Update(vm, id);
 
                 foreach (var add in forAdd)
@@ -185,7 +182,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         {
             try
             {
-                List<OrderViewModel> orders = await _orderService.GetAllViewModel();
+                List<OrderViewModel> orders = await _orderService.GetAllWithDishes();
 
                 if (orders.Count == 0)
                     return NotFound();
@@ -209,12 +206,12 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         {
             try
             {
-                var order = await _orderService.GetOrderWithDishes(id);
+                var order = await _orderService.GetByIdSaveViewModel(id);
 
                 if (order == null)
                     return NotFound();
 
-                return Ok(order);
+                return Ok(await _orderService.GetOrderWithDishes(id));
             }
             catch (Exception ex)
             {
@@ -233,7 +230,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         {
             try
             {
-                var order = await _orderService.GetOrderWithDishes(id);
+                var order = await _orderService.GetByIdSaveViewModel(id);
 
                 if (order == null)
                     return NotFound();

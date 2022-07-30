@@ -23,11 +23,11 @@ namespace ApiRestaurante.Core.Application.Services
             _mapper = mapper;
         }
 
-        public virtual async Task<VM> Add(SaveVM saveVM)
+        public virtual async Task<SaveVM> Add(SaveVM saveVM)
         {
             T t = _mapper.Map<T>(saveVM);
             t = await _repo.AddAsync(t);
-            VM vm = _mapper.Map<VM>(t);
+            SaveVM vm = _mapper.Map<SaveVM>(t);
 
             return vm;
         }

@@ -46,6 +46,12 @@ namespace ApiRestaurante.Core.Application.Services
             return _mapper.Map<OrderViewModel>(order);
         }
 
+        public async Task<List<OrderViewModel>> GetAllWithDishes()
+        {
+            var orders = await _orderRepository.GetAllWithIncludesAsync(new List<string> { "Dishes" });
+            return _mapper.Map<List<OrderViewModel>>(orders);
+        }
+
         public async Task AddDishToOrder(int orderId, int dishId)
         {
             OrderDish orderDish = new()

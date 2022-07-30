@@ -13,5 +13,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
         Task<List<OrderDishViewModel>> GetAllDishesIdsByOrder(int orderId);
         Task DeleteDishFromOrder(int orderId, int dishId);
         Task<OrderViewModel> GetOrderWithDishes(int id);
+        Task<List<OrderViewModel>> GetAllWithDishes();
     }
 }

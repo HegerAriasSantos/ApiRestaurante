@@ -14,7 +14,7 @@ namespace ApiRestaurante.Core.Application.ViewModels.Order
         public int Id { get; set; }
 
         [Required(ErrorMessage ="Debe proporcionar el Id de la mesa donde se hizo la orden")]
-        public int IdTable { get; set; }
+        public int TableId { get; set; }
         public List<int> DishIds { get; set; }
 
         [JsonIgnore]

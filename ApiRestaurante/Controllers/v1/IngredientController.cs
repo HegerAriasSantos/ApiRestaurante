@@ -64,6 +64,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     return BadRequest(vm);
                 }
 
+                vm.Id = id;
                 await _ingService.Update(vm, id);
 
                 return Ok(vm);
