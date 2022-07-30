@@ -22,7 +22,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             _orderService = orderService;
         }
 
-        [HttpPost]
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -51,7 +54,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveTableViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -76,7 +79,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpGet]
+        [HttpGet("List")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TableViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -97,7 +100,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TableViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -118,7 +121,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpGet("{tableId}")]
+        [HttpGet("GetTableOrders/{tableId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -152,7 +155,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpPut]
+        [HttpPut("ChangeStatus")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangeStatus([FromQuery]int tableId, [FromQuery]int status)

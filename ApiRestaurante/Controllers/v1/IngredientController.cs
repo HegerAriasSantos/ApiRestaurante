@@ -18,7 +18,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             _ingService = ingService;
         }
 
-        [HttpPost]
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -45,7 +48,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpPut("{id}")]
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPut("Update/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveIngredientViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -68,7 +74,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpGet]
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [HttpGet("List")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -89,7 +98,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveIngredientViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
