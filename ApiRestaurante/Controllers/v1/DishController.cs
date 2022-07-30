@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
@@ -13,17 +14,19 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
     public class DishController : BaseApiController
     {
         private readonly IDishService _dishService;
+        private readonly IIngredientService _ingService;
 
-        public DishController(IDishService dishService)
+        public DishController(IDishService dishService,IIngredientService ingredientService)
         {
             _dishService = dishService;
+            _ingService = ingredientService;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(SaveDishViewModel vm)
+        public async Task<IActionResult> Post(SaveDishViewModel vm)
         {
             try
             {
@@ -32,11 +35,34 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     return BadRequest(vm);
                 }
 
+                if (vm.IngredientIds.Count == 0)
+                {
+                    vm.HasError = true;
+                    vm.Error = "Debes añadir al menos un ingrediente";
+                    return BadRequest(vm);
+                }
+
+                foreach(var id in vm.IngredientIds)
+                {
+                    var ingredient = await _ingService.GetByIdSaveViewModel(id);
+                    if (ingredient == null)
+                    {
+                        vm.HasError = true;
+                        vm.Error = $"No existe un ingrediente con el id {id}";
+                        return BadRequest(vm);
+                    }
+                }
+
                 var dish = await _dishService.Add(vm);
                 if (dish == null)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, dish);
                 }
+
+                foreach (var id in vm.IngredientIds)
+                {
+                    await _dishService.AddIngredientToDish(dish.Id, id);
+                }               
 
                 return NoContent();
             }
@@ -47,10 +73,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveDishViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DishViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(int id, SaveDishViewModel vm)
+        public async Task<IActionResult> Put(int id, SaveDishViewModel vm)
         {
             try
             {
@@ -59,9 +85,62 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     return BadRequest(vm);
                 }
 
+                var dish = await _dishService.GetByIdViewModel(id);
+                if (dish == null)
+                {
+                    vm.HasError = true;
+                    vm.Error = $"No existe un plato con el id {id}";
+                    return BadRequest(vm);
+                }
+
+                if (vm.IngredientIds.Count == 0)
+                {
+                    vm.HasError = true;
+                    vm.Error = "Debes añadir al menos un ingrediente";
+                    return BadRequest(vm);
+                }
+
+                foreach (var ingId in vm.IngredientIds)
+                {
+                    var ingredient = await _ingService.GetByIdSaveViewModel(ingId);
+                    if (ingredient == null)
+                    {
+                        vm.HasError = true;
+                        vm.Error = $"No existe un ingrediente con el id {ingId}";
+                        return BadRequest(vm);
+                    }
+                }
+
+                List<int> forAdd = new();
+                List<int> forDelete = new();
+
+                var ingsByDish = await _dishService.GetAllIngredientIdsByDish(id);
+
+                foreach (int ingId in vm.IngredientIds)
+                {
+                    if (!ingsByDish.Any(i => i.IngredientId == ingId))
+                        forAdd.Add(ingId);
+                }
+
+                foreach (var ing in ingsByDish)
+                {
+                    if (!vm.IngredientIds.Contains(ing.IngredientId))
+                        forDelete.Add(ing.IngredientId);
+                }
+
+                foreach (var del in forDelete)
+                {
+                    await _dishService.DeleteIngredientFromDish(del, id);
+                }
+
                 await _dishService.Update(vm, id);
 
-                return Ok(vm);
+                foreach (var add in forAdd)
+                {
+                    await _dishService.AddIngredientToDish(id, add);
+                }
+
+                return Ok(await _dishService.GetDishWithIngredients(id));
             }
             catch (Exception ex)
             {
@@ -73,11 +152,11 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DishViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                List<DishViewModel> dishes = await _dishService.GetAllViewModel();
+                List<DishViewModel> dishes = await _dishService.GetAllWithIngredients();
 
                 if (dishes.Count == 0)
                     return NotFound();
@@ -91,14 +170,14 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveDishViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DishViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var dish = await _dishService.GetByIdSaveViewModel(id);
+                var dish = await _dishService.GetDishWithIngredients(id);
 
                 if (dish == null)
                     return NotFound();

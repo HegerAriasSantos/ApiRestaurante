@@ -9,8 +9,8 @@ namespace ApiRestaurante.Core.Domain.Entities
 {
     public class IngredientDish : AuditableBaseEntity
     {
-        public int IdDish { get; set; }
-        public int IdIngredient { get; set; }
+        public int DishId { get; set; }
+        public int IngredientId { get; set; }
         public Dish JDish { get; set; }
         public Ingredient JIngredient { get; set; }
     }

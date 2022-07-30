@@ -11,7 +11,7 @@ namespace ApiRestaurante.Core.Application.ViewModels.Dish
 {
     public class SaveDishViewModel : BaseViewModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage ="Debe proporcionar un nombre")]
         public string Name { get; set; }

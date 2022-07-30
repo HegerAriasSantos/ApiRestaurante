@@ -51,6 +51,13 @@ namespace ApiRestaurante.Core.Application.Services
             return saveVM;
         }
 
+        public virtual async Task<VM> GetByIdViewModel(int id)
+        {
+            T t = await _repo.GetByIdAsync(id);
+            VM vm = _mapper.Map<VM>(t);
+            return vm;
+        }
+
         public virtual async Task Delete(int id)
         {
             T t = await _repo.GetByIdAsync(id);

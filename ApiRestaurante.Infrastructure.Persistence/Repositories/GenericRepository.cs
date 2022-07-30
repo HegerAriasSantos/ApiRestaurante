@@ -40,7 +40,9 @@ namespace ApiRestaurante.Infrastructure.Persistence.Repositories
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            return await _dbContext.Set<T>()
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -50,7 +52,7 @@ namespace ApiRestaurante.Infrastructure.Persistence.Repositories
 
         public virtual async Task<List<T>> GetAllWithIncludesAsync(List<string> props)
         {
-            var query = _dbContext.Set<T>().AsQueryable();
+            var query = _dbContext.Set<T>().AsNoTracking().AsQueryable();
 
             foreach (string prop in props)
             {

@@ -49,15 +49,15 @@ namespace ApiRestaurante.Infrastructure.Persistence.Contexts
                     j => j
                         .HasOne(ingdish => ingdish.JDish)
                         .WithMany(ing => ing.IngredientDishes)
-                        .HasForeignKey(ingdish => ingdish.IdDish),
+                        .HasForeignKey(ingdish => ingdish.DishId),
                     j => j
                         .HasOne(ingdish => ingdish.JIngredient)
                         .WithMany(dish => dish.IngredientDishes)
-                        .HasForeignKey(ingdish => ingdish.IdIngredient),
+                        .HasForeignKey(ingdish => ingdish.IngredientId),
                     j =>
                     {
                         j.ToTable("IngredientDish");
-                        j.HasKey(t => new { t.IdDish, t.IdIngredient });
+                        j.HasKey(t => new { t.DishId, t.IngredientId });
                     }
                 );
 

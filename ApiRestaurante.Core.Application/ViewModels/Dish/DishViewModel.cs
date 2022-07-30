@@ -13,7 +13,7 @@ namespace ApiRestaurante.Core.Application.ViewModels.Dish
 {
     public class DishViewModel:BaseViewModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public int People { get; set; }

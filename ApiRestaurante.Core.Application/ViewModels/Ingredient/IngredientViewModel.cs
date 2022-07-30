@@ -11,6 +11,5 @@ namespace ApiRestaurante.Core.Application.ViewModels.Ingredient
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<DishViewModel> Dishes { get; set; }
     }
 }
