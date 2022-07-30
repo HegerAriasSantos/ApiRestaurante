@@ -22,7 +22,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(SaveIngredientViewModel vm)
+        public async Task<IActionResult> Post(SaveIngredientViewModel vm)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveIngredientViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(int id, SaveIngredientViewModel vm)
+        public async Task<IActionResult> Put(int id, SaveIngredientViewModel vm)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> Get()
         {
             try
             {
@@ -93,7 +93,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveIngredientViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {

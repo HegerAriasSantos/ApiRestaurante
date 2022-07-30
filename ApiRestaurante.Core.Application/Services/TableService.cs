@@ -22,5 +22,12 @@ namespace ApiRestaurante.Core.Application.Services
             _tableRepository = tableRepository;
             _mapper = mapper;
         }
+
+        public async Task ChangeTableStatus(int tableId, int status)
+        {
+            Table t=await _tableRepository.GetByIdAsync(tableId);
+            t.Status = status;
+            await _tableRepository.UpdateAsync(t, tableId);
+        }
     }
 }

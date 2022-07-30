@@ -22,5 +22,12 @@ namespace ApiRestaurante.Core.Application.Services
             _orderRepository = orderRepository;
             _mapper = mapper;
         }
+
+        public async Task<List<OrderViewModel>> GetOrdersByTable(int tableId)
+        {
+            var orders = await _orderRepository.GetAllAsync();
+            var ordersByTable = orders.FindAll(o => o.IdTable == tableId);
+            return _mapper.Map<List<OrderViewModel>>(ordersByTable);
+        }
     }
 }
