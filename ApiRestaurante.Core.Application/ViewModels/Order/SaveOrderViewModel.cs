@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.ViewModels.Order
@@ -13,9 +14,12 @@ namespace ApiRestaurante.Core.Application.ViewModels.Order
 
         [Required(ErrorMessage ="Debe proporcionar el Id de la mesa donde se hizo la orden")]
         public int IdTable { get; set; }
-        
-        [Required(ErrorMessage ="Debe proporcionar el sub total de la orden")]
+        public List<int> DishIds { get; set; }
+
+        [JsonIgnore]
         public double TotalPrice { get; set; }
+
+        [JsonIgnore]
         public int Status { get; set; }
     }
 }

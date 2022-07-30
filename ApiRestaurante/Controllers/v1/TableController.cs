@@ -152,10 +152,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
             }
         }
 
-        [HttpPut("{tableId,status}")]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangeStatus(int tableId, int status)
+        public async Task<IActionResult> ChangeStatus([FromQuery]int tableId, [FromQuery]int status)
         {
             try
             {

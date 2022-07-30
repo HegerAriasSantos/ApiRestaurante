@@ -3,6 +3,7 @@ using ApiRestaurante.Core.Application.ViewModels.Dish;
 using ApiRestaurante.Core.Application.ViewModels.Ingredient;
 using ApiRestaurante.Core.Application.ViewModels.IngredientDish;
 using ApiRestaurante.Core.Application.ViewModels.Order;
+using ApiRestaurante.Core.Application.ViewModels.OrderDish;
 using ApiRestaurante.Core.Application.ViewModels.Table;
 using ApiRestaurante.Core.Application.ViewModels.User;
 using ApiRestaurante.Core.Domain.Entities;
@@ -86,6 +87,7 @@ namespace ApiRestaurante.Core.Application.Mappings
             CreateMap<Order, SaveOrderViewModel>()
                 .ForMember(d => d.HasError, o => o.Ignore())
                 .ForMember(d => d.Error, o => o.Ignore())
+                .ForMember(d => d.DishIds, o => o.Ignore())
                 .ReverseMap()
                 .ForMember(d => d.Created, o => o.Ignore())
                 .ForMember(d => d.CreatedBy, o => o.Ignore())
@@ -137,6 +139,19 @@ namespace ApiRestaurante.Core.Application.Mappings
                 .ForMember(d => d.Modified, o => o.Ignore())
                 .ForMember(d => d.ModifiedBy, o => o.Ignore())
                 .ForMember(d => d.JIngredient, o => o.Ignore())
+                .ForMember(d => d.JDish, o => o.Ignore())
+                .ForMember(d => d.Id, o => o.Ignore())
+                ;
+
+            CreateMap<OrderDish, OrderDishViewModel>()
+                .ForMember(d => d.HasError, o => o.Ignore())
+                .ForMember(d => d.Error, o => o.Ignore())
+                .ReverseMap()
+                .ForMember(d => d.Created, o => o.Ignore())
+                .ForMember(d => d.CreatedBy, o => o.Ignore())
+                .ForMember(d => d.Modified, o => o.Ignore())
+                .ForMember(d => d.ModifiedBy, o => o.Ignore())
+                .ForMember(d => d.JOrder, o => o.Ignore())
                 .ForMember(d => d.JDish, o => o.Ignore())
                 .ForMember(d => d.Id, o => o.Ignore())
                 ;

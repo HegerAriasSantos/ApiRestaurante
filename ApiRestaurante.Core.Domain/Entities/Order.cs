@@ -9,7 +9,7 @@ namespace ApiRestaurante.Core.Domain.Entities
 {
     public class Order : AuditableBaseEntity
     {
-        public int IdTable { get; set; }
+        public int TableId { get; set; }
         public double TotalPrice { get; set; }
         public int Status { get; set; }
 

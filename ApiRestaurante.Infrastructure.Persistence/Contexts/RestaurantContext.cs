@@ -38,7 +38,7 @@ namespace ApiRestaurante.Infrastructure.Persistence.Contexts
             m.Entity<Table>()
                 .HasMany<Order>(table => table.Orders)
                 .WithOne(order => order.Table)
-                .HasForeignKey(order => order.IdTable)
+                .HasForeignKey(order => order.TableId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             //Ingredients-Dishes
@@ -69,15 +69,15 @@ namespace ApiRestaurante.Infrastructure.Persistence.Contexts
                     j => j
                         .HasOne(ordish => ordish.JDish)
                         .WithMany(ord => ord.OrderDishes)
-                        .HasForeignKey(ordish => ordish.IdDish),
+                        .HasForeignKey(ordish => ordish.DishId),
                     j => j
                         .HasOne(ordish => ordish.JOrder)
                         .WithMany(dish => dish.OrderDishes)
-                        .HasForeignKey(ordish => ordish.IdOrder),
+                        .HasForeignKey(ordish => ordish.OrderId),
                     j =>
                     {
                         j.ToTable("OrderDish");
-                        j.HasKey(t => new { t.IdDish, t.IdOrder });
+                        j.HasKey(t => new { t.DishId, t.OrderId });
                     }
                 );
             #endregion
@@ -96,7 +96,7 @@ namespace ApiRestaurante.Infrastructure.Persistence.Contexts
             #endregion
 
             #region Order
-            m.Entity<Order>().Property(t => t.IdTable).IsRequired();
+            m.Entity<Order>().Property(t => t.TableId).IsRequired();
             m.Entity<Order>().Property(t => t.TotalPrice).IsRequired();
             m.Entity<Order>().Property(t => t.Status).IsRequired();
             #endregion

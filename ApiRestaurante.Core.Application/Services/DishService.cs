@@ -65,5 +65,11 @@ namespace ApiRestaurante.Core.Application.Services
             var ingByDish = ingredients.FindAll(i => i.DishId == dishId);
             return _mapper.Map<List<IngredientDishViewModel>>(ingByDish);
         }
+
+        public async Task<double> GetPriceById(int id)
+        {
+            var dish = await _dishRepository.GetByIdAsync(id);
+            return dish.Price;
+        }
     }
 }

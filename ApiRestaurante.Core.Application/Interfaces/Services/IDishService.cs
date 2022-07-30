@@ -15,5 +15,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
         Task<DishViewModel> GetDishWithIngredients(int id);
         Task<List<DishViewModel>> GetAllWithIngredients();
         Task<List<IngredientDishViewModel>> GetAllIngredientIdsByDish(int dishId);
+        Task<double> GetPriceById(int id);
     }
 }

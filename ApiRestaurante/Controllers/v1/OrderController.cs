@@ -1,9 +1,11 @@
-﻿using ApiRestaurante.Core.Application.Interfaces.Services;
+﻿using ApiRestaurante.Core.Application.Enums;
+using ApiRestaurante.Core.Application.Interfaces.Services;
 using ApiRestaurante.Core.Application.ViewModels.Order;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
@@ -12,17 +14,19 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
     public class OrderController : BaseApiController
     {
         private readonly IOrderService _orderService;
+        private readonly IDishService _dishService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, IDishService dishService)
         {
             _orderService = orderService;
+            _dishService = dishService;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(SaveOrderViewModel vm)
+        public async Task<IActionResult> Post(SaveOrderViewModel vm)
         {
             try
             {
@@ -31,10 +35,42 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     return BadRequest(vm);
                 }
 
+                if (vm.DishIds.Count == 0)
+                {
+                    vm.HasError = true;
+                    vm.Error = "Debes añadir al menos un plato";
+                    return BadRequest(vm);
+                }
+
+                foreach (var id in vm.DishIds)
+                {
+                    var dish = await _dishService.GetByIdSaveViewModel(id);
+                    if (dish == null)
+                    {
+                        vm.HasError = true;
+                        vm.Error = $"No existe un platillo con el id {id}";
+                        return BadRequest(vm);
+                    }
+                }
+
+                double subTotal = 0;
+                foreach (var id in vm.DishIds)
+                {
+                    var dish = await _dishService.GetByIdViewModel(id);
+                    subTotal += dish.Price;
+                }
+
+                vm.TotalPrice = subTotal;
+                vm.Status = (int)OrderStatus.InProcess;
                 var order = await _orderService.Add(vm);
                 if (order == null)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, order);
+                }
+
+                foreach (var id in vm.DishIds)
+                {
+                    await _orderService.AddDishToOrder(order.Id, id);
                 }
 
                 return NoContent();
@@ -46,10 +82,10 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveOrderViewModel))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(int id, SaveOrderViewModel vm)
+        public async Task<IActionResult> Put(int id, SaveOrderViewModel vm)
         {
             try
             {
@@ -58,21 +94,85 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     return BadRequest(vm);
                 }
 
+                var order = await _orderService.GetByIdViewModel(id);
+                if (order == null)
+                {
+                    vm.HasError = true;
+                    vm.Error = $"No existe una orden con el id {id}";
+                    return BadRequest(vm);
+                }
+
+                if (vm.DishIds.Count == 0)
+                {
+                    vm.HasError = true;
+                    vm.Error = "Debes añadir al menos un platillo";
+                    return BadRequest(vm);
+                }
+
+                foreach (var dishId in vm.DishIds)
+                {
+                    var dish = await _dishService.GetByIdSaveViewModel(dishId);
+                    if (dish == null)
+                    {
+                        vm.HasError = true;
+                        vm.Error = $"No existe un platillo con el id {dishId}";
+                        return BadRequest(vm);
+                    }
+                }
+
+                List<int> forAdd = new();
+                List<int> forDelete = new();
+                double amountToAdd = 0;
+                double amountToSubstract = 0;
+
+                var dishByOrder = await _orderService.GetAllDishesIdsByOrder(id);
+
+                foreach (int dishId in vm.DishIds)
+                {
+                    if (!dishByOrder.Any(i => i.DishId == dishId))
+                    {
+                        forAdd.Add(dishId);
+                        amountToAdd += await _dishService.GetPriceById(dishId);
+                    }
+                }
+
+                foreach (var dish in dishByOrder)
+                {
+                    if (!vm.DishIds.Contains(dish.DishId))
+                    {
+                        forDelete.Add(dish.DishId);
+                        amountToSubstract += await _dishService.GetPriceById(dish.DishId);
+                    }
+                }
+
+                foreach (var del in forDelete)
+                {
+                    await _orderService.DeleteDishFromOrder(id, del);
+                }
+
+                vm.TotalPrice += amountToAdd;
+                vm.TotalPrice -= amountToSubstract;
+
                 await _orderService.Update(vm, id);
 
-                return Ok(vm);
+                foreach (var add in forAdd)
+                {
+                    await _orderService.AddDishToOrder(id, add);
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            } 
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> Get()
         {
             try
             {
@@ -90,19 +190,42 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SaveOrderViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var order = await _orderService.GetByIdSaveViewModel(id);
+                var order = await _orderService.GetOrderWithDishes(id);
 
                 if (order == null)
                     return NotFound();
 
                 return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrderWithDishes(id);
+
+                if (order == null)
+                    return NotFound();
+
+                await _orderService.Delete(id);
+
+                return NoContent();
             }
             catch (Exception ex)
             {
