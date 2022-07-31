@@ -32,32 +32,32 @@ namespace ApiRestaurante.Presentation.WebApi.Extensions
                 });
 
                 opt.DescribeAllParametersInCamelCase();
-                //opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                //{
-                //    Name = "Authorization",
-                //    In = ParameterLocation.Header,
-                //    Type = SecuritySchemeType.ApiKey,
-                //    Scheme = "Bearer",
-                //    BearerFormat = "JWT",
-                //    Description = "Input yout Bearer token in this format - Bearer {your token here}"
-                //});
-                //opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                //{
-                //    {
-                //        new OpenApiSecurityScheme
-                //        {
-                //            Reference=new OpenApiReference
-                //            {
-                //                Type=ReferenceType.SecurityScheme,
-                //                Id="Bearer"
-                //            },
-                //            Scheme="Bearer",
-                //            Name="Bearer",
-                //            In=ParameterLocation.Header,
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    Description = "Input yout Bearer token in this format - Bearer {your token here}"
+                });
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference=new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            },
+                            Scheme="Bearer",
+                            Name="Bearer",
+                            In=ParameterLocation.Header,
 
-                //        }, new List<string>()
-                //    },
-                //});
+                        }, new List<string>()
+                    }
+                });
             });
         }
 

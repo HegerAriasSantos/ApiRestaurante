@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.DTOs.User
@@ -14,5 +15,9 @@ namespace ApiRestaurante.Core.Application.DTOs.User
         public List<string> Roles { get; set; }
         public bool HasError { get; set; }
         public string Error { get; set; }
+        public string JWToken { get; set; }
+
+        [JsonIgnore]
+        public string RefreshToken { get; set; }
     }
 }

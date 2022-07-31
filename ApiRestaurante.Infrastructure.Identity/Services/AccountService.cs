@@ -9,6 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ApiRestaurante.Core.Application.Interfaces.Services;
+using ApiRestaurante.Core.Domain.Settings;
+using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using ApiRestaurante.Core.Application.DTOs.Account;
+using System.Security.Cryptography;
 
 namespace ApiRestaurante.Infrastructure.Identity.Services
 {
@@ -17,12 +24,14 @@ namespace ApiRestaurante.Infrastructure.Identity.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
+        private readonly JWTSettings _jwtSettings;
 
-        public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
+        public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, IOptions<JWTSettings> jWTSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
+            _jwtSettings = jWTSettings.Value;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -47,7 +56,7 @@ namespace ApiRestaurante.Infrastructure.Identity.Services
                 return response;
             }
 
-            //JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
+            JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
 
             response.Id = user.Id;
             response.Email = user.Email;
@@ -56,9 +65,9 @@ namespace ApiRestaurante.Infrastructure.Identity.Services
             var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
 
             response.Roles = roles.ToList();
-            //response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            //var refreshToken = GenerateRefreshToken();
-            //response.RefreshToken = refreshToken.Token;
+            response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            var refreshToken = GenerateRefreshToken();
+            response.RefreshToken = refreshToken.Token;
 
             return response;
         }
@@ -166,5 +175,61 @@ namespace ApiRestaurante.Infrastructure.Identity.Services
 
             return response;
         }
+
+        #region Privates
+        private async Task<JwtSecurityToken> GenerateJWToken(AppUser user)
+        {
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var roleClaims = new List<Claim>();
+
+            foreach (var role in roles)
+            {
+                roleClaims.Add(new Claim("roles", role));
+            }
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,user.UserName)
+                ,new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                ,new Claim(JwtRegisteredClaimNames.Email,user.Email)
+                ,new Claim("uid",user.Id)
+            }
+            .Union(userClaims)
+            .Union(roleClaims);
+
+            var symetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var signingCredentials = new SigningCredentials(symetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+            var jwtSecToken = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                signingCredentials: signingCredentials);
+
+            return jwtSecToken;
+        }
+
+        private RefreshToken GenerateRefreshToken()
+        {
+            return new RefreshToken
+            {
+                Token = RandomTokenString(),
+                Expires = DateTime.UtcNow.AddDays(2),
+                Created = DateTime.UtcNow
+            };
+        }
+
+        private string RandomTokenString()
+        {
+            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[40];
+            rngCryptoServiceProvider.GetBytes(randomBytes);
+
+            return BitConverter.ToString(randomBytes).Replace("-", "");
+        }
+        #endregion
     }
 }

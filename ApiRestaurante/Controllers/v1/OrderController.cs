@@ -1,6 +1,7 @@
 ﻿using ApiRestaurante.Core.Application.Enums;
 using ApiRestaurante.Core.Application.Interfaces.Services;
 using ApiRestaurante.Core.Application.ViewModels.Order;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [Authorize(Roles ="Waiter,SuperAdmin")]
     public class OrderController : BaseApiController
     {
         private readonly IOrderService _orderService;
