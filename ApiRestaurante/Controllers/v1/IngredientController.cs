@@ -109,7 +109,7 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         {
             try
             {
-                var ing = await _ingService.GetByIdSaveViewModel(id);
+                var ing = await _ingService.GetByIdViewModel(id);
 
                 if (ing == null)
                     return NotFound();

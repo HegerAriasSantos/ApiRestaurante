@@ -184,12 +184,12 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
         {
             try
             {
-                var dish = await _dishService.GetDishWithIngredients(id);
+                var dish = await _dishService.GetByIdSaveViewModel(id);
 
                 if (dish == null)
                     return NotFound();
 
-                return Ok(dish);
+                return Ok(await _dishService.GetDishWithIngredients(id));
             }
             catch (Exception ex)
             {
