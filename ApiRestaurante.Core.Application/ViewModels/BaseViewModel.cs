@@ -8,7 +8,6 @@ namespace ApiRestaurante.Core.Application.ViewModels
 {
     public class BaseViewModel
     {
-        public bool HasError { get; set; }
-        public string Error { get; set; }
+        public virtual int Id { get; set; }
     }
 }

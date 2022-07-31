@@ -12,7 +12,7 @@ namespace ApiRestaurante.Core.Application.ViewModels.Table
     public class SaveTableViewModel : BaseViewModel
     {
         [JsonIgnore]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [Required(ErrorMessage ="Debe proporcionar la cantidad maxima de personas que acepta la mesa")]
         public int MaxDiners { get; set; }

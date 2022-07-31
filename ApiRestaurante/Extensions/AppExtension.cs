@@ -9,7 +9,7 @@ namespace ApiRestaurante.Presentation.WebApi.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(opt =>
             {
-                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "InternetBanking Api");
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant Api");
             });
         }
     }

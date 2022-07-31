@@ -9,7 +9,6 @@ namespace ApiRestaurante.Core.Application.ViewModels.Ingredient
 {
     public class IngredientViewModel : BaseViewModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

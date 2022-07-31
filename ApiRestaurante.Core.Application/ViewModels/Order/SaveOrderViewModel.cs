@@ -11,7 +11,7 @@ namespace ApiRestaurante.Core.Application.ViewModels.Order
     public class SaveOrderViewModel : BaseViewModel
     {
         [JsonIgnore]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [Required(ErrorMessage ="Debe proporcionar el Id de la mesa donde se hizo la orden")]
         public int TableId { get; set; }

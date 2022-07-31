@@ -42,9 +42,8 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
 
                 if (vm.IngredientIds.Count == 0)
                 {
-                    vm.HasError = true;
-                    vm.Error = "Debes añadir al menos un ingrediente";
-                    return BadRequest(vm);
+                    ModelState.AddModelError("zeroIngredients", "Debes añadir al menos un ingrediente");
+                    return BadRequest(ModelState);
                 }
 
                 foreach(var id in vm.IngredientIds)
@@ -52,9 +51,8 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     var ingredient = await _ingService.GetByIdSaveViewModel(id);
                     if (ingredient == null)
                     {
-                        vm.HasError = true;
-                        vm.Error = $"No existe un ingrediente con el id {id}";
-                        return BadRequest(vm);
+                        ModelState.AddModelError("ingredientNotExists", $"No existe un ingrediente con el id {id}");
+                        return BadRequest(ModelState);
                     }
                 }
 
@@ -96,16 +94,14 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                 var dish = await _dishService.GetByIdViewModel(id);
                 if (dish == null)
                 {
-                    vm.HasError = true;
-                    vm.Error = $"No existe un plato con el id {id}";
-                    return BadRequest(vm);
+                    ModelState.AddModelError("dishNotExists", $"No existe un plato con el id {id}");
+                    return BadRequest(ModelState);
                 }
 
                 if (vm.IngredientIds.Count == 0)
                 {
-                    vm.HasError = true;
-                    vm.Error = "Debes añadir al menos un ingrediente";
-                    return BadRequest(vm);
+                    ModelState.AddModelError("zeroIngredients", "Debes añadir al menos un ingrediente");
+                    return BadRequest(ModelState);
                 }
 
                 foreach (var ingId in vm.IngredientIds)
@@ -113,9 +109,8 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     var ingredient = await _ingService.GetByIdSaveViewModel(ingId);
                     if (ingredient == null)
                     {
-                        vm.HasError = true;
-                        vm.Error = $"No existe un ingrediente con el id {ingId}";
-                        return BadRequest(vm);
+                        ModelState.AddModelError("ingredientNotExist", $"No existe un ingrediente con el id {ingId}");
+                        return BadRequest(ModelState);
                     }
                 }
 

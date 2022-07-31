@@ -12,7 +12,7 @@ namespace ApiRestaurante.Core.Application.ViewModels.Ingredient
     public class SaveIngredientViewModel : BaseViewModel
     {
         [JsonIgnore]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [Required(ErrorMessage = "Debe proporcionar un nombre para el ingrediente")]
         public string Name { get; set; }

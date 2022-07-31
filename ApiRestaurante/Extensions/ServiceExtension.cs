@@ -22,7 +22,7 @@ namespace ApiRestaurante.Presentation.WebApi.Extensions
                 {
                     Version = "v1",
                     Title = "Restaurant Api",
-                    Description = "Api the Waiters of a Restaurant",
+                    Description = "Api for the Waiters of a Restaurant",
                     Contact = new OpenApiContact
                     {
                         Name = "Joel Grullon",

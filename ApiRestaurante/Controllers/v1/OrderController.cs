@@ -42,9 +42,8 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
 
                 if (vm.DishIds.Count == 0)
                 {
-                    vm.HasError = true;
-                    vm.Error = "Debes añadir al menos un plato";
-                    return BadRequest(vm);
+                    ModelState.AddModelError("zerDishes", "Debes añadir al menos un plato");
+                    return BadRequest(ModelState);
                 }
 
                 foreach (var id in vm.DishIds)
@@ -52,9 +51,8 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     var dish = await _dishService.GetByIdSaveViewModel(id);
                     if (dish == null)
                     {
-                        vm.HasError = true;
-                        vm.Error = $"No existe un platillo con el id {id}";
-                        return BadRequest(vm);
+                        ModelState.AddModelError("dishNotExists", $"No existe un platillo con el id {id}");
+                        return BadRequest(ModelState);
                     }
                 }
 
@@ -101,16 +99,14 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                 var order = await _orderService.GetByIdViewModel(id);
                 if (order == null)
                 {
-                    vm.HasError = true;
-                    vm.Error = $"No existe una orden con el id {id}";
-                    return BadRequest(vm);
+                    ModelState.AddModelError("orderNotExists", $"No existe una orden con el id {id}");
+                    return BadRequest(ModelState);
                 }
 
                 if (vm.DishIds.Count == 0)
                 {
-                    vm.HasError = true;
-                    vm.Error = "Debes añadir al menos un platillo";
-                    return BadRequest(vm);
+                    ModelState.AddModelError("zeroDishes", "Debes añadir al menos un platillo");
+                    return BadRequest(ModelState);
                 }
 
                 foreach (var dishId in vm.DishIds)
@@ -118,9 +114,8 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                     var dish = await _dishService.GetByIdSaveViewModel(dishId);
                     if (dish == null)
                     {
-                        vm.HasError = true;
-                        vm.Error = $"No existe un platillo con el id {dishId}";
-                        return BadRequest(vm);
+                        ModelState.AddModelError("dishNotExists", $"No existe un platillo con el id {dishId}");
+                        return BadRequest(ModelState);
                     }
                 }
 

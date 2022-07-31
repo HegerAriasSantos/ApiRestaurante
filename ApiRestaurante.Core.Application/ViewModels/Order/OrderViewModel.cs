@@ -10,7 +10,6 @@ namespace ApiRestaurante.Core.Application.ViewModels.Order
 {
     public class OrderViewModel : BaseViewModel
     {
-        public int Id { get; set; }
         public int TableId { get; set; }
         public double TotalPrice { get; set; }
         public int Status { get; set; }

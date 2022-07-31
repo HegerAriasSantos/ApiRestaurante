@@ -151,20 +151,18 @@ namespace ApiRestaurante.Presentation.WebApi.Controllers.v1
                 var table = await _tableService.GetByIdViewModel(tableId);
 
                 if (table == null)
-                    return NotFound(new OrderViewModel
-                    {
-                        HasError = true,
-                        Error = $"No existe una mesa con el id {tableId}"
-                    });
+                {
+                    ModelState.AddModelError("tableNotExists", $"No existe una mesa con el id {tableId}");
+                    return NotFound(ModelState);
+                }
 
                 var orders = await _orderService.GetOrdersByTable(tableId);
 
                 if (orders.Count == 0)
-                    return NotFound(new OrderViewModel
-                    {
-                        HasError = true,
-                        Error = $"No existen ordenes en proceso para la mesa con el id {tableId}"
-                    });
+                {
+                    ModelState.AddModelError("ordersNotExists", $"No existen ordenes en proceso para la mesa con el id {tableId}");
+                    return NotFound(ModelState);
+                }
 
                 return Ok(orders);
             }

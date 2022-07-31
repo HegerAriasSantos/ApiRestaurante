@@ -9,7 +9,6 @@ namespace ApiRestaurante.Core.Application.ViewModels.Table
 {
     public class TableViewModel:BaseViewModel
     {
-        public int Id { get; set; }
         public int MaxDiners { get; set; }
         public string Description { get; set; }
         public int Status { get; set; }
